@@ -6,26 +6,40 @@ import hooks from 'eslint-plugin-react-hooks';
 import react from 'eslint-plugin-react';
 import globals from 'globals';
 
-export default tseslint.config(eslint.configs.recommended, {
-  languageOptions: {
-    parser: tseslint.parser,
-    parserOptions: {
-      project: './tsconfig.json',
+export default tseslint.config(
+  eslint.configs.recommended,
+  {
+    languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        project: './tsconfig.json',
+      },
+      globals: {
+        ...globals.browser,
+        ...globals.jest,
+        ...globals.node,
+        ...globals.commonjs,
+      },
     },
-    globals: {
-      ...globals.browser,
-      ...globals.jest,
-      ...globals.node,
-      ...globals.commonjs,
+    files: ['**/*.ts', '**/*.tsx'],
+    plugins: {
+      '@typescript-eslint': tseslint.plugin,
+      'react-hooks': hooks,
+      react,
+    },
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'error',
+      'no-unused-vars': ['error', { args: 'none' }],
     },
   },
-  files: ['**/*.ts', '**/*.tsx'],
-  plugins: {
-    '@typescript-eslint': tseslint.plugin,
-    'react-hooks': hooks,
-    react,
-  },
-  rules: {
-    '@typescript-eslint/no-explicit-any': 'error',
-  },
-});
+  {
+    // Configuration for JavaScript files (including Webpack config, etc.)
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.commonjs,
+      },
+    },
+    files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
+  }
+);
